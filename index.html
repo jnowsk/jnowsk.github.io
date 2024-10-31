@@ -34,13 +34,14 @@
             background-position: center;
             background-repeat: no-repeat; /* Evitar repetição da imagem */
             transform-origin: center;
-            transition: transform 0.1s, filter 0.1s; /* Suaviza a transição das transformações e do filtro */
+            transition: transform 0.1s; /* Suaviza a transição das transformações */
         }
 
         /* Camadas da imagem */
         .layer1 {
             background-image: url('camada1.png');
             transform: translateZ(-200px) scale(1.5);
+            animation: hologramEffect 1.5s infinite alternate; /* Animação holográfica */
         }
 
         .layer2 {
@@ -53,6 +54,23 @@
             transform: translateZ(0) scale(1);
         }
 
+        .layer4 {
+            background-image: url('camada4.png'); /* A nova imagem da quarta camada */
+            transform: translateZ(100px) scale(1.2); /* Fica mais perto e é maior */
+        }
+
+        /* Efeito holográfico */
+        @keyframes hologramEffect {
+            0% {
+                filter: brightness(1) saturate(1);
+                transform: translateZ(-200px) scale(1.5);
+            }
+            100% {
+                filter: brightness(1.5) saturate(1.5); /* Aumenta o brilho e a saturação */
+                transform: translateZ(-200px) scale(1.55); /* Leve aumento de escala */
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -60,6 +78,7 @@
         <div class="layer layer1"></div>
         <div class="layer layer2"></div>
         <div class="layer layer3"></div>
+        <div class="layer layer4"></div> <!-- Quarta camada adicionada -->
     </div>
 
     <script>
@@ -76,16 +95,7 @@
                 const depth = index === 2 ? 33.3 : index * 100; // Reduz a profundidade da camada 3
                 const movementX = x * depth * globalMovementMultiplier; // Aplica o multiplicador global ao movimento lateral
                 const rotationY = x * 15 * globalMovementMultiplier; // Aplica o multiplicador global à rotação em Y
-                
-                // Aplica o movimento e a rotação
-                layer.style.transform = `translateX(${movementX}px) rotateY(${rotationY}deg)`;
-
-                // Efeito de brilho na camada 1 apenas quando o mouse se move
-                if (index === 0) { // Se for a camada 1
-                    layer.style.filter = `brightness(${1 + Math.abs(x)})`; // Aumenta o brilho conforme o movimento
-                } else {
-                    layer.style.filter = 'brightness(1)'; // Restante das camadas sem brilho
-                }
+                layer.style.transform = `translateX(${movementX}px) rotateY(${rotationY}deg)`; // Aplica movimento e rotação
             });
         });
     </script>
