@@ -75,12 +75,13 @@
 
         // Adicionando um multiplicador global positivo
         const globalMovementMultiplier = 2; // Ajuste este valor para aumentar a intensidade do movimento
+        const slowMovementMultiplier = 0.25; // Fator para a camada 4 responder 4 vezes mais lento
 
         parallaxContainer.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5; // Movimento horizontal
 
             layers.forEach((layer, index) => {
-                const depth = index === 2 ? 33.3 : index * 100; // Reduz a profundidade da camada 3
+                let depth = index === 2 ? 33.3 : index * 100; // Reduz a profundidade da camada 3
                 const movementX = x * depth * globalMovementMultiplier; // Aplica o multiplicador global ao movimento lateral
                 const rotationY = x * 15 * globalMovementMultiplier; // Aplica o multiplicador global à rotação em Y
                 
@@ -92,6 +93,12 @@
                     layer.style.filter = `brightness(${1 + Math.abs(x)})`; // Aumenta o brilho conforme o movimento
                 } else {
                     layer.style.filter = 'brightness(1)'; // Restante das camadas sem brilho
+                }
+
+                // Para a camada 4, aplica movimento mais lento
+                if (index === 3) { // Se for a camada 4
+                    const slowMovementX = x * depth * slowMovementMultiplier * globalMovementMultiplier;
+                    layer.style.transform = `translateX(${slowMovementX}px) rotateY(${rotationY}deg)`; // Aplica o movimento lento
                 }
             });
         });
