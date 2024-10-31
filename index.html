@@ -69,15 +69,28 @@
         // Adicionando um multiplicador global positivo
         const globalMovementMultiplier = 2; // Ajuste este valor para aumentar a intensidade do movimento
 
-        parallaxContainer.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) - 0.5; // Movimento horizontal
-
+        // Função para calcular o movimento
+        function moveLayers(x) {
             layers.forEach((layer, index) => {
                 const depth = index === 2 ? 33.3 : index * 100; // Reduz a profundidade da camada 3
                 const movementX = x * depth * globalMovementMultiplier; // Aplica o multiplicador global ao movimento lateral
                 const rotationY = x * 15 * globalMovementMultiplier; // Aplica o multiplicador global à rotação em Y
                 layer.style.transform = `translateX(${movementX}px) rotateY(${rotationY}deg)`; // Aplica movimento e rotação
             });
+        }
+
+        // Evento de movimento do mouse
+        parallaxContainer.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) - 0.5; // Movimento horizontal
+            moveLayers(x);
+        });
+
+        // Evento de movimento do toque
+        parallaxContainer.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0]; // Pega o primeiro toque
+            const x = (touch.clientX / window.innerWidth) - 0.5; // Movimento horizontal
+            moveLayers(x);
+            e.preventDefault(); // Evita o scroll da página
         });
     </script>
 </body>
