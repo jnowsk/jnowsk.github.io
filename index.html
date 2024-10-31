@@ -53,17 +53,16 @@
             transform: translateZ(0) scale(1);
         }
 
-        /* Nova camada: Layer 4 */
         .layer4 {
-            background-image: url('camada4.png');
-            transform: translateZ(100px) scale(1.2); /* Ligeiramente maior para dar destaque */
+            background-image: url('camada4.png'); /* Imagem da quarta camada */
+            transform: translateZ(100px) scale(0.8); /* Ajuste para a frente das outras camadas */
         }
 
     </style>
 </head>
 <body>
     <div class="parallax-container">
-        <div class="layer layer4"></div> <!-- Nova camada adicionada aqui -->
+        <div class="layer layer4"></div> <!-- Nova camada adicionada -->
         <div class="layer layer1"></div>
         <div class="layer layer2"></div>
         <div class="layer layer3"></div>
@@ -75,32 +74,34 @@
 
         // Adicionando um multiplicador global positivo
         const globalMovementMultiplier = 2; // Ajuste este valor para aumentar a intensidade do movimento
+        const slowMovementMultiplier = 0.25; // Multiplicador para a camada 4 (4x mais lento)
 
         parallaxContainer.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5; // Movimento horizontal
 
             layers.forEach((layer, index) => {
-                let depth, movementX, rotationY;
-                
-                if (index === 3) { // Layer 4 (nova camada)
-                    depth = -50; // Profundidade da camada 4 (mais à frente)
-                    movementX = x * depth * (globalMovementMultiplier / 4); // 4x mais lento que a primeira camada
-                    rotationY = x * 3 * (globalMovementMultiplier / 4); // Rotação bem sutil
-                } else if (index === 2) { // Camada 3
-                    depth = 33.3; // Reduz a profundidade da camada 3
-                    movementX = x * depth * globalMovementMultiplier;
-                    rotationY = x * 15 * globalMovementMultiplier;
+                let depth;
+                if (index === 3) {
+                    depth = 25; // Nova profundidade da camada 4
+                } else if (index === 2) {
+                    depth = 33.3; // Profundidade da camada 3
                 } else {
-                    depth = index * 100; // Profundidade normal para as outras camadas
-                    movementX = x * depth * globalMovementMultiplier;
-                    rotationY = x * 15 * globalMovementMultiplier;
+                    depth = index * 100; // Profundidade para as outras camadas
                 }
-                
-                // Aplica o movimento e a rotação
-                layer.style.transform = `translateX(${movementX}px) rotateY(${rotationY}deg)`;
+
+                const movementX = x * depth * globalMovementMultiplier; // Aplica o multiplicador global ao movimento lateral
+
+                // Aplica o movimento mais lento na camada 4
+                if (index === 0) {
+                    const slowMovementX = x * depth * slowMovementMultiplier; // Movimentação mais lenta
+                    layer.style.transform = `translateX(${slowMovementX}px)`; // Sem rotação para a camada 4
+                } else {
+                    const rotationY = x * 15 * globalMovementMultiplier; // Aplica o multiplicador global à rotação em Y
+                    layer.style.transform = `translateX(${movementX}px) rotateY(${rotationY}deg)`;
+                }
 
                 // Efeito de brilho na camada 1 apenas quando o mouse se move
-                if (index === 0) { // Se for a camada 1
+                if (index === 1) { // Se for a camada 1
                     layer.style.filter = `brightness(${1 + Math.abs(x)})`; // Aumenta o brilho conforme o movimento
                 } else {
                     layer.style.filter = 'brightness(1)'; // Restante das camadas sem brilho
