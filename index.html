@@ -41,8 +41,8 @@
         .layer1 {
             background-image: url('camada1.png');
             transform: translateZ(-200px) scale(1.5);
-            filter: blur(5px) brightness(1.2) contrast(1.3); /* Efeito holográfico */
-            mix-blend-mode: screen; /* Modo de mistura para efeito holográfico */
+            filter: brightness(1.2) contrast(1.3);
+            transition: filter 0.1s; /* Suaviza a transição do filtro */
         }
 
         .layer2 {
@@ -79,6 +79,10 @@
                 const rotationY = x * 15 * globalMovementMultiplier; // Aplica o multiplicador global à rotação em Y
                 layer.style.transform = `translateX(${movementX}px) rotateY(${rotationY}deg)`; // Aplica movimento e rotação
             });
+
+            // Efeito de brilho na camada 1 baseado no movimento
+            const brightnessFactor = 1 + Math.abs(x) * 0.2; // Fator de brilho baseado no movimento
+            layers[0].style.filter = `brightness(${brightnessFactor}) contrast(1.3)`; // Aplica o brilho
         }
 
         // Evento de movimento do mouse
