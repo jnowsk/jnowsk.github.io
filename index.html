@@ -69,26 +69,17 @@
         // Adicionando um multiplicador global positivo
         const globalMovementMultiplier = 2; // Ajuste este valor para aumentar a intensidade do movimento
 
-        // Função para aplicar transformações nas camadas
-        const applyTransformations = (x) => {
+        // Para dispositivos móveis, use a API de orientação
+        window.addEventListener('deviceorientation', (event) => {
+            const x = event.gamma; // Inclinação em torno do eixo Y (esquerda/direita)
+            const depthMultiplier = 10; // Ajuste este valor para controlar a sensibilidade do movimento
+
             layers.forEach((layer, index) => {
                 const depth = index === 2 ? 33.3 : index * 100; // Reduz a profundidade da camada 3
-                const movementX = (x / 90) * depth * globalMovementMultiplier; // Aplica o multiplicador global ao movimento lateral
+                const movementX = (x / 90) * depth * globalMovementMultiplier * depthMultiplier; // Aplica o multiplicador global ao movimento lateral
                 const rotationY = (x / 90) * 15 * globalMovementMultiplier; // Aplica o multiplicador global à rotação em Y
                 layer.style.transform = `translateX(${movementX}px) rotateY(${rotationY}deg)`; // Aplica movimento e rotação
             });
-        };
-
-        // Interação com o mouse
-        parallaxContainer.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) * 90 - 45; // Normaliza a posição do mouse
-            applyTransformations(x);
-        });
-
-        // Interação com o dispositivo móvel
-        window.addEventListener('deviceorientation', (event) => {
-            const x = event.gamma; // Inclinação em torno do eixo Y (esquerda/direita)
-            applyTransformations(x);
         });
     </script>
 </body>
