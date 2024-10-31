@@ -54,18 +54,17 @@
         }
 
         .layer4 {
-            background-image: url('camada4.png'); /* Substitua pela imagem da quarta camada */
-            transform: scale(2.2); /* Aumenta a camada significativamente */
+            background-image: url('camada4.png');
+            transform: translateZ(-400px) scale(2);
         }
-
     </style>
 </head>
 <body>
     <div class="parallax-container">
+        <div class="layer layer4"></div> <!-- Nova camada -->
         <div class="layer layer1"></div>
         <div class="layer layer2"></div>
         <div class="layer layer3"></div>
-        <div class="layer layer4"></div> <!-- Nova camada adicionada -->
     </div>
 
     <script>
@@ -83,11 +82,16 @@
                 const movementX = x * depth * globalMovementMultiplier; // Aplica o multiplicador global ao movimento lateral
                 const rotationY = x * 15 * globalMovementMultiplier; // Aplica o multiplicador global à rotação em Y
                 
-                // Aplica o movimento e a rotação
-                layer.style.transform = `translateX(${movementX}px) rotateY(${rotationY}deg)`;
+                // Ajusta o movimento da quarta camada para ser 4x mais lenta
+                if (index === 0) { 
+                    const slowMovementX = movementX / 4; // Movimento 4x mais lento
+                    layer.style.transform = `translateX(${slowMovementX}px) rotateY(${rotationY / 4}deg)`; // Aplica rotação 4x mais lenta
+                } else {
+                    layer.style.transform = `translateX(${movementX}px) rotateY(${rotationY}deg)`;
+                }
 
                 // Efeito de brilho na camada 1 apenas quando o mouse se move
-                if (index === 0) { // Se for a camada 1
+                if (index === 1) { // Se for a camada 1
                     layer.style.filter = `brightness(${1 + Math.abs(x)})`; // Aumenta o brilho conforme o movimento
                 } else {
                     layer.style.filter = 'brightness(1)'; // Restante das camadas sem brilho
