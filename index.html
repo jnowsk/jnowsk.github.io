@@ -69,22 +69,16 @@
         // Adicionando um multiplicador global positivo
         const globalMovementMultiplier = 2; // Ajuste este valor para aumentar a intensidade do movimento
 
-        // Verifica se a API de Device Orientation está disponível
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', (event) => {
-                const x = event.gamma; // Inclinação em torno do eixo Y (esquerda/direita)
-                const depthMultiplier = 10; // Ajuste este valor para controlar a sensibilidade do movimento
+        parallaxContainer.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) - 0.5; // Movimento horizontal
 
-                layers.forEach((layer, index) => {
-                    const depth = index === 2 ? 33.3 : index * 100; // Reduz a profundidade da camada 3
-                    const movementX = (x / 90) * depth * globalMovementMultiplier * depthMultiplier; // Aplica o multiplicador global ao movimento lateral
-                    const rotationY = (x / 90) * 15 * globalMovementMultiplier; // Aplica o multiplicador global à rotação em Y
-                    layer.style.transform = `translateX(${movementX}px) rotateY(${rotationY}deg)`; // Aplica movimento e rotação
-                });
+            layers.forEach((layer, index) => {
+                const depth = index === 2 ? 33.3 : index * 100; // Reduz a profundidade da camada 3
+                const movementX = x * depth * globalMovementMultiplier; // Aplica o multiplicador global ao movimento lateral
+                const rotationY = x * 15 * globalMovementMultiplier; // Aplica o multiplicador global à rotação em Y
+                layer.style.transform = `translateX(${movementX}px) rotateY(${rotationY}deg)`; // Aplica movimento e rotação
             });
-        } else {
-            console.error("Device Orientation não é suportado no seu dispositivo.");
-        }
+        });
     </script>
 </body>
 </html>
