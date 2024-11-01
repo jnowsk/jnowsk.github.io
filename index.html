@@ -69,8 +69,8 @@
                 const depth = depthMultipliers[index];
                 const movementX = x * depth * movementMultipliers[index];
                 const movementY = (y * depth * movementMultipliers[index]) / 2;
-                const rotationY = x * 50 * movementMultipliers[index]; // Diminui a rotação para suavizar no celular
-                const rotationX = y * 50 * movementMultipliers[index]; // Suaviza a rotação
+                const rotationY = x * 30 * movementMultipliers[index]; // Ajustado para suavizar mais
+                const rotationX = y * 30 * movementMultipliers[index]; // Ajustado para suavizar mais
 
                 const scaleValue = index === 5 ? 'scale(1.3)' : '';
                 layer.style.transform = `translateX(${movementX}px) translateY(${movementY}px) rotateY(${rotationY}deg) rotateX(${rotationX}deg) ${scaleValue}`;
@@ -78,12 +78,14 @@
             });
         }
 
+        // Evento de movimento do mouse para o desktop
         function handleMouseMove(event) {
             const x = (event.clientX / window.innerWidth) - 0.5;
             const y = (event.clientY / window.innerHeight) - 0.5;
             updateLayers(x, y);
         }
 
+        // Evento de toque para dispositivos móveis
         function handleTouchMove(event) {
             const touchX = event.touches[0].clientX;
             const touchY = event.touches[0].clientY;
@@ -94,16 +96,11 @@
             updateLayers(x, y);
         }
 
+        // Eventos para desktop e celular
         parallaxContainer.addEventListener('mousemove', handleMouseMove);
-
-        parallaxContainer.addEventListener('touchstart', (event) => {
-            initialTouchX = event.touches[0].clientX;
-            initialTouchY = event.touches[0].clientY;
-        });
-
         parallaxContainer.addEventListener('touchmove', handleTouchMove);
 
-        // Inicializa a posição do mouse/touch
+        // Inicializa a posição das camadas
         updateLayers(0, 0);
     </script>
 </body>
