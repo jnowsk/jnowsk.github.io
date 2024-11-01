@@ -12,14 +12,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f0f0f0; /* Cor de fundo ao redor da imagem */
+            background-color: #f0f0f0;
             overflow: hidden;
         }
 
         .parallax-container {
             position: relative;
-            width: 600px; /* Largura da área da imagem */
-            height: 400px; /* Altura da área da imagem */
+            width: 600px;
+            height: 400px;
             perspective: 1000px;
         }
 
@@ -29,45 +29,19 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-size: contain; /* Mudar para contain para evitar corte */
+            background-size: contain;
             background-position: center;
-            background-repeat: no-repeat; /* Evitar repetição da imagem */
+            background-repeat: no-repeat;
             transform-origin: center;
-            transition: transform 0.1s, filter 0.1s; /* Suaviza a transição das transformações e do filtro */
+            transition: transform 0.1s, filter 0.1s;
         }
 
-        /* Camadas da imagem */
-        .layer0 {
-            background-image: url('camada0.png');
-            transform: translateZ(-300px);
-        }
-
-        .layer1 {
-            background-image: url('camada1.png');
-            transform: translateZ(-200px);
-        }
-
-        .layer2 {
-            background-image: url('camada2.png');
-            transform: translateZ(-100px);
-        }
-
-        .layer3 {
-            background-image: url('camada3.png');
-            transform: translateZ(0);
-        }
-
-        .layer4 {
-            background-image: url('camada4.png');
-            transform: translateZ(100px);
-            z-index: 1;
-        }
-
-        .layer5 {
-            background-image: url('camada5.png');
-            transform: translateZ(250px) scale(1.2); /* Ajuste na profundidade */
-            z-index: 2;
-        }
+        .layer0 { background-image: url('camada0.png'); transform: translateZ(-300px); }
+        .layer1 { background-image: url('camada1.png'); transform: translateZ(-200px); }
+        .layer2 { background-image: url('camada2.png'); transform: translateZ(-100px); }
+        .layer3 { background-image: url('camada3.png'); transform: translateZ(0); }
+        .layer4 { background-image: url('camada4.png'); transform: translateZ(100px); z-index: 1; }
+        .layer5 { background-image: url('camada5.png'); transform: translateZ(250px) scale(1.2); z-index: 2; }
 
     </style>
 </head>
@@ -84,56 +58,53 @@
     <script>
         const parallaxContainer = document.querySelector('.parallax-container');
         const layers = document.querySelectorAll('.layer');
+        
+        const movementMultipliers = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3];
+        const depthMultipliers = [-300, -200, -100, 0, 100, 200];
 
-        const movementMultipliers = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]; // Multiplicadores para cada camada
-        const depthMultipliers = [-300, -200, -100, 0, 100, 200]; // Profundidade de cada camada
+        let initialTouchX = 0, initialTouchY = 0;
 
-        // Função para atualizar as transformações das camadas
         function updateLayers(x, y) {
             layers.forEach((layer, index) => {
                 const depth = depthMultipliers[index];
                 const movementX = x * depth * movementMultipliers[index];
-                const movementY = (y * depth * movementMultipliers[index]) / 2; // Cortar o movimento vertical pela metade
-                const rotationY = x * 100 * movementMultipliers[index];
-                const rotationX = y * 100 * movementMultipliers[index]; // Adicionando a rotação no eixo X
+                const movementY = (y * depth * movementMultipliers[index]) / 2;
+                const rotationY = x * 50 * movementMultipliers[index]; // Diminui a rotação para suavizar no celular
+                const rotationX = y * 50 * movementMultipliers[index]; // Suaviza a rotação
 
-                // Mantém o scale(1.2) apenas para a camada 5
                 const scaleValue = index === 5 ? 'scale(1.3)' : '';
-
-                // Aplica o movimento, rotação e inclinação
                 layer.style.transform = `translateX(${movementX}px) translateY(${movementY}px) rotateY(${rotationY}deg) rotateX(${rotationX}deg) ${scaleValue}`;
-
-                // Aplica o filtro de brilho
                 layer.style.filter = `brightness(${1 + Math.abs(x * movementMultipliers[index])})`;
             });
         }
 
-        // Inicializa variáveis de toque
-        let initialTouchX = 0;
-        let initialTouchY = 0;
+        function handleMouseMove(event) {
+            const x = (event.clientX / window.innerWidth) - 0.5;
+            const y = (event.clientY / window.innerHeight) - 0.5;
+            updateLayers(x, y);
+        }
 
-        // Função para lidar com o início do toque
+        function handleTouchMove(event) {
+            const touchX = event.touches[0].clientX;
+            const touchY = event.touches[0].clientY;
+
+            const x = (touchX / window.innerWidth) - 0.5;
+            const y = (touchY / window.innerHeight) - 0.5;
+
+            updateLayers(x, y);
+        }
+
+        parallaxContainer.addEventListener('mousemove', handleMouseMove);
+
         parallaxContainer.addEventListener('touchstart', (event) => {
             initialTouchX = event.touches[0].clientX;
             initialTouchY = event.touches[0].clientY;
         });
 
-        // Função para lidar com o movimento do toque
-        parallaxContainer.addEventListener('touchmove', (event) => {
-            const touchX = event.touches[0].clientX;
-            const touchY = event.touches[0].clientY;
+        parallaxContainer.addEventListener('touchmove', handleTouchMove);
 
-            // Calcula o movimento com base na diferença do toque
-            const deltaX = (touchX - initialTouchX) / window.innerWidth;
-            const deltaY = (touchY - initialTouchY) / window.innerHeight;
-
-            updateLayers(deltaX, deltaY);
-        });
-
-        // Inicializa a posição do toque
-        const initialX = 0;
-        const initialY = 0;
-        updateLayers(initialX, initialY); // Atualiza as camadas na inicialização
+        // Inicializa a posição do mouse/touch
+        updateLayers(0, 0);
     </script>
 </body>
 </html>
