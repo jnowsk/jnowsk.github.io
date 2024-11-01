@@ -85,7 +85,7 @@
         const parallaxContainer = document.querySelector('.parallax-container');
         const layers = document.querySelectorAll('.layer');
 
-        const movementMultipliers = [0.05, 0.2, 0.15, 0.3, 0.25, 0.25]; // Multiplicadores para cada camada
+        const movementMultipliers = [0.05, 0.2, 0.15, 0.35, 0.25, 0.3]; // Multiplicadores para cada camada
         const depthMultipliers = [-300, -200, -100, 0, 100, 200]; // Profundidade de cada camada
 
         // Função para atualizar as transformações das camadas
@@ -93,7 +93,7 @@
             layers.forEach((layer, index) => {
                 const depth = depthMultipliers[index];
                 const movementX = x * depth * movementMultipliers[index];
-                const movementY = (y * depth * movementMultipliers[index]) / 2; // Cortar o movimento vertical pela metade
+                const movementY = (y * depth * movementMultipliers[index]) / 2.5; // Cortar o movimento vertical pela metade
                 const rotationY = x * 100 * movementMultipliers[index];
                 const rotationX = y * 100 * movementMultipliers[index]; // Adicionando a rotação no eixo X
 
