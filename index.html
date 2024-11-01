@@ -12,14 +12,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f0f0f0;
+            background-color: #f0f0f0; /* Cor de fundo ao redor da imagem */
             overflow: hidden;
         }
 
         .parallax-container {
             position: relative;
-            width: 600px;
-            height: 400px;
+            width: 600px; /* Largura da área da imagem */
+            height: 400px; /* Altura da área da imagem */
             perspective: 1000px;
         }
 
@@ -29,19 +29,45 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-size: contain;
+            background-size: contain; /* Mudar para contain para evitar corte */
             background-position: center;
-            background-repeat: no-repeat;
+            background-repeat: no-repeat; /* Evitar repetição da imagem */
             transform-origin: center;
-            transition: transform 0.1s, filter 0.1s;
+            transition: transform 0.1s, filter 0.1s; /* Suaviza a transição das transformações e do filtro */
         }
 
-        .layer0 { background-image: url('camada0.png'); transform: translateZ(-300px); }
-        .layer1 { background-image: url('camada1.png'); transform: translateZ(-200px); }
-        .layer2 { background-image: url('camada2.png'); transform: translateZ(-100px); }
-        .layer3 { background-image: url('camada3.png'); transform: translateZ(0); }
-        .layer4 { background-image: url('camada4.png'); transform: translateZ(100px); z-index: 1; }
-        .layer5 { background-image: url('camada5.png'); transform: translateZ(250px) scale(1.2); z-index: 2; }
+        /* Camadas da imagem */
+        .layer0 {
+            background-image: url('camada0.png');
+            transform: translateZ(-300px);
+        }
+
+        .layer1 {
+            background-image: url('camada1.png');
+            transform: translateZ(-200px);
+        }
+
+        .layer2 {
+            background-image: url('camada2.png');
+            transform: translateZ(-100px);
+        }
+
+        .layer3 {
+            background-image: url('camada3.png');
+            transform: translateZ(0);
+        }
+
+        .layer4 {
+            background-image: url('camada4.png');
+            transform: translateZ(100px);
+            z-index: 1;
+        }
+
+        .layer5 {
+            background-image: url('camada5.png');
+            transform: translateZ(250px) scale(1.2); /* Ajuste na profundidade */
+            z-index: 2;
+        }
 
     </style>
 </head>
@@ -58,50 +84,41 @@
     <script>
         const parallaxContainer = document.querySelector('.parallax-container');
         const layers = document.querySelectorAll('.layer');
-        
-        const movementMultipliers = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3];
-        const depthMultipliers = [-300, -200, -100, 0, 100, 200];
 
-        let initialTouchX = 0, initialTouchY = 0;
+        const movementMultipliers = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]; // Multiplicadores para cada camada
+        const depthMultipliers = [-300, -200, -100, 0, 100, 200]; // Profundidade de cada camada
 
+        // Função para atualizar as transformações das camadas
         function updateLayers(x, y) {
             layers.forEach((layer, index) => {
                 const depth = depthMultipliers[index];
                 const movementX = x * depth * movementMultipliers[index];
-                const movementY = (y * depth * movementMultipliers[index]) / 2;
-                const rotationY = x * 30 * movementMultipliers[index]; // Ajustado para suavizar mais
-                const rotationX = y * 30 * movementMultipliers[index]; // Ajustado para suavizar mais
+                const movementY = (y * depth * movementMultipliers[index]) / 2; // Cortar o movimento vertical pela metade
+                const rotationY = x * 100 * movementMultipliers[index];
+                const rotationX = y * 100 * movementMultipliers[index]; // Adicionando a rotação no eixo X
 
+                // Mantém o scale(1.2) apenas para a camada 5
                 const scaleValue = index === 5 ? 'scale(1.3)' : '';
+
+                // Aplica o movimento, rotação e inclinação
                 layer.style.transform = `translateX(${movementX}px) translateY(${movementY}px) rotateY(${rotationY}deg) rotateX(${rotationX}deg) ${scaleValue}`;
+
+                // Aplica o filtro de brilho
                 layer.style.filter = `brightness(${1 + Math.abs(x * movementMultipliers[index])})`;
             });
         }
 
-        // Evento de movimento do mouse para o desktop
-        function handleMouseMove(event) {
-            const x = (event.clientX / window.innerWidth) - 0.5;
-            const y = (event.clientY / window.innerHeight) - 0.5;
+        // Evento de movimento do mouse
+        parallaxContainer.addEventListener('mousemove', (event) => {
+            const x = (event.clientX / window.innerWidth) * 2 - 1; // Normaliza o valor para um range de -1 a 1
+            const y = (event.clientY / window.innerHeight) * 2 - 1; // Normaliza o valor para um range de -1 a 1
             updateLayers(x, y);
-        }
+        });
 
-        // Evento de toque para dispositivos móveis
-        function handleTouchMove(event) {
-            const touchX = event.touches[0].clientX;
-            const touchY = event.touches[0].clientY;
-
-            const x = (touchX / window.innerWidth) - 0.5;
-            const y = (touchY / window.innerHeight) - 0.5;
-
-            updateLayers(x, y);
-        }
-
-        // Eventos para desktop e celular
-        parallaxContainer.addEventListener('mousemove', handleMouseMove);
-        parallaxContainer.addEventListener('touchmove', handleTouchMove);
-
-        // Inicializa a posição das camadas
-        updateLayers(0, 0);
+        // Inicializa a posição do mouse
+        const initialX = 0; // Simulando posição inicial do mouse
+        const initialY = 0; // Simulando posição inicial do mouse
+        updateLayers(initialX, initialY); // Atualiza as camadas na inicialização
     </script>
 </body>
 </html>
