@@ -100,10 +100,13 @@
                 const rotationX = isMobile ? 0 : y * 100 * movementMultipliers[index];
 
                 // Se for mobile, a camada 5 se move 2x mais devagar
-                const slowDownFactor = isMobile && index === 5 ? 2 : 1; 
+                const slowDownFactor = isMobile && index === 5 ? 2 : 1;
+
+                // Mantém o scale(1.2) apenas para a camada 5
+                const scaleValue = index === 5 ? 'scale(1.3)' : '';
 
                 // Aplica o movimento, rotação e inclinação
-                layer.style.transform = `translateX(${movementX / slowDownFactor}px) translateY(${movementY / slowDownFactor}px) rotateY(${rotationY}deg) rotateX(${rotationX}deg)`;
+                layer.style.transform = `translateX(${movementX / slowDownFactor}px) translateY(${movementY / slowDownFactor}px) rotateY(${rotationY}deg) rotateX(${rotationX}deg) ${scaleValue}`;
 
                 // Aplica o filtro de brilho
                 layer.style.filter = `brightness(${1 + Math.abs(x * movementMultipliers[index])})`;
