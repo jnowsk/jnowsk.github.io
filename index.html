@@ -101,18 +101,44 @@
                 const scaleValue = index === 5 ? 'scale(1.3)' : '';
 
                 // Aplica o movimento, rotação e inclinação
-                layer.style.transform = translateX(${movementX}px) translateY(${movementY}px) rotateY(${rotationY}deg) rotateX(${rotationX}deg) ${scaleValue};
+                layer.style.transform = `translateX(${movementX}px) translateY(${movementY}px) rotateY(${rotationY}deg) rotateX(${rotationX}deg) ${scaleValue}`;
 
                 // Aplica o filtro de brilho
-                layer.style.filter = brightness(${1 + Math.abs(x * movementMultipliers[index])});
+                layer.style.filter = `brightness(${1 + Math.abs(x * movementMultipliers[index])})`;
             });
         }
 
-        // Evento de movimento do mouse
-        parallaxContainer.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) - 0.5;
-            const y = (e.clientY / window.innerHeight) - 0.5;
+        // Evento de movimento do mouse (desktop)
+        parallaxContainer.addEventListener('mousemove', (event) => {
+            const x = (event.clientX / window.innerWidth) - 0.5;
+            const y = (event.clientY / window.innerHeight) - 0.5;
             updateLayers(x, y);
+        });
+
+        // Evento de início de toque (mobile)
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        parallaxContainer.addEventListener('touchstart', (event) => {
+            touchStartX = event.touches[0].clientX;
+            touchStartY = event.touches[0].clientY;
+        });
+
+        // Evento de movimento do toque (mobile)
+        parallaxContainer.addEventListener('touchmove', (event) => {
+            const touchMoveX = event.touches[0].clientX;
+            const touchMoveY = event.touches[0].clientY;
+
+            const x = ((touchMoveX - touchStartX) / window.innerWidth) * 2; // Normaliza para range de -1 a 1
+            const y = ((touchMoveY - touchStartY) / window.innerHeight) * 2; // Normaliza para range de -1 a 1
+
+            updateLayers(x, y);
+
+            // Atualiza o touchStart para suavizar a movimentação
+            touchStartX = touchMoveX;
+            touchStartY = touchMoveY;
+
+            event.preventDefault(); // Impede o comportamento padrão de scroll
         });
 
         // Inicializa a posição do mouse
