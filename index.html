@@ -18,8 +18,7 @@
 
         .parallax-container {
             position: relative;
-            width: 100%; /* Ajuste para a largura total */
-            max-width: 600px; /* Largura máxima da área da imagem */
+            width: 600px; /* Largura da área da imagem */
             height: 400px; /* Altura da área da imagem */
             perspective: 1000px;
         }
@@ -38,12 +37,38 @@
         }
 
         /* Camadas da imagem */
-        .layer0 { background-image: url('camada0.png'); transform: translateZ(-300px); }
-        .layer1 { background-image: url('camada1.png'); transform: translateZ(-200px); }
-        .layer2 { background-image: url('camada2.png'); transform: translateZ(-100px); }
-        .layer3 { background-image: url('camada3.png'); transform: translateZ(0); }
-        .layer4 { background-image: url('camada4.png'); transform: translateZ(100px); z-index: 1; }
-        .layer5 { background-image: url('camada5.png'); transform: translateZ(250px) scale(1.2); z-index: 2; }
+        .layer0 {
+            background-image: url('camada0.png');
+            transform: translateZ(-300px);
+        }
+
+        .layer1 {
+            background-image: url('camada1.png');
+            transform: translateZ(-200px);
+        }
+
+        .layer2 {
+            background-image: url('camada2.png');
+            transform: translateZ(-100px);
+        }
+
+        .layer3 {
+            background-image: url('camada3.png');
+            transform: translateZ(0);
+        }
+
+        .layer4 {
+            background-image: url('camada4.png');
+            transform: translateZ(100px);
+            z-index: 1;
+        }
+
+        .layer5 {
+            background-image: url('camada5.png');
+            transform: translateZ(250px) scale(1.2); /* Ajuste na profundidade */
+            z-index: 2;
+        }
+
     </style>
 </head>
 <body>
@@ -76,32 +101,19 @@
                 const scaleValue = index === 5 ? 'scale(1.3)' : '';
 
                 // Aplica o movimento, rotação e inclinação
-                layer.style.transform = `translateX(${movementX}px) translateY(${movementY}px) rotateY(${rotationY}deg) rotateX(${rotationX}deg) ${scaleValue}`;
+                layer.style.transform = translateX(${movementX}px) translateY(${movementY}px) rotateY(${rotationY}deg) rotateX(${rotationX}deg) ${scaleValue};
 
                 // Aplica o filtro de brilho
-                layer.style.filter = `brightness(${1 + Math.abs(x * movementMultipliers[index])})`;
+                layer.style.filter = brightness(${1 + Math.abs(x * movementMultipliers[index])});
             });
         }
 
-        // Função para lidar com o movimento do mouse e toque
-        function handleMovement(event) {
-            let x, y;
-
-            if (event.type === 'mousemove') {
-                x = (event.clientX / window.innerWidth) - 0.5;
-                y = (event.clientY / window.innerHeight) - 0.5;
-            } else if (event.type === 'touchmove') {
-                const touch = event.touches[0];
-                x = (touch.clientX / window.innerWidth) - 0.5;
-                y = (touch.clientY / window.innerHeight) - 0.5;
-            }
-
+        // Evento de movimento do mouse
+        parallaxContainer.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) - 0.5;
+            const y = (e.clientY / window.innerHeight) - 0.5;
             updateLayers(x, y);
-        }
-
-        // Adiciona eventos de movimento do mouse e toque
-        parallaxContainer.addEventListener('mousemove', handleMovement);
-        parallaxContainer.addEventListener('touchmove', handleMovement);
+        });
 
         // Inicializa a posição do mouse
         const initialX = 0; // Simulando posição inicial do mouse
