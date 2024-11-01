@@ -108,16 +108,31 @@
             });
         }
 
-        // Evento de movimento de orientação do dispositivo
-        window.addEventListener('deviceorientation', (event) => {
-            const x = event.gamma / 90; // Para controlar o eixo X (esquerda/direita)
-            const y = event.beta / 90; // Para controlar o eixo Y (cima/baixo)
-            updateLayers(x, y);
+        // Inicializa variáveis de toque
+        let initialTouchX = 0;
+        let initialTouchY = 0;
+
+        // Função para lidar com o início do toque
+        parallaxContainer.addEventListener('touchstart', (event) => {
+            initialTouchX = event.touches[0].clientX;
+            initialTouchY = event.touches[0].clientY;
         });
 
-        // Inicializa a posição do mouse
-        const initialX = 0; // Simulando posição inicial do mouse
-        const initialY = 0; // Simulando posição inicial do mouse
+        // Função para lidar com o movimento do toque
+        parallaxContainer.addEventListener('touchmove', (event) => {
+            const touchX = event.touches[0].clientX;
+            const touchY = event.touches[0].clientY;
+
+            // Calcula o movimento com base na diferença do toque
+            const deltaX = (touchX - initialTouchX) / window.innerWidth;
+            const deltaY = (touchY - initialTouchY) / window.innerHeight;
+
+            updateLayers(deltaX, deltaY);
+        });
+
+        // Inicializa a posição do toque
+        const initialX = 0;
+        const initialY = 0;
         updateLayers(initialX, initialY); // Atualiza as camadas na inicialização
     </script>
 </body>
